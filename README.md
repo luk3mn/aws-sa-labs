@@ -218,3 +218,91 @@ sudo service httpd restart
 ```url
 http://<public-ip>/cafe
 ```
+---
+# Adding a Database Layer
+## Migrating a Database to Amazon RDS
+### Scenario
+The café currently uses a single EC2 instance to host their web server, database, and application code.
+
+Meanwhile, café business has grown. The order history that's stored in the database provides valuable business information that the café staff doesn't want to lose. Martha uses the data for accounting, and Frank looks at it occasionally to plan how many of each dessert type he should bake.
+
+Sofía has additional concerns. The database must be consistently upgraded and patched, and she doesn’t always have time to do these tasks. Also, administering the database is a specialized skill. Training others to do database administration isn’t something that she wants to spend time on. Meanwhile, Sofía is also concerned that the café isn’t doing data backups as often as they should.
+
+Finally, Martha also wants to reduce labor costs that are associated with the technical learning investment that's needed to manage the database.
+
+<div style="display: flex;">
+    <div style="margin: .3rem; text-align: center;">
+        <h4>Archtecture at the start of the lab</h4>
+        <img src="assets/rds-migration/start_arch.png"/>
+    </div>
+    <div style="margin: .3rem; text-align: center;">
+        <h4>Archtecture at the end of the lab</h4>
+        <img src="assets/rds-migration/end_arch.png"/>
+    </div>
+</div>
+
+_**Note: We've already created the architecture of the first image, now we have to migrate it to use RDS instead of using it in an EC2** instance**_
+
+### Creating an RDS instance for the café application
+We have to choose an architecture where the database should provide essential features such as durability, scalability, and high performance.
+
+![rds](assets/rds-migration/rds.png)
+
+### Exporting data from the old database and establishing a connection to the new database
+With the new RDS instance created, we can move on to the next step in the café's database migration plan by exporting the data from the database that the café application currently uses to the RDS database.
+
+>  Connection to EC2 instance and capture existing data in a file by using the mysqldump utility.
+
+```sh
+mysqldump --databases cafe_db -u root -p > CafeDbDump.sql
+```
+![mysqldump](assets/rds-migration/mysqldump.png)
+
+### Working with the RDS database
+
+```sh
+mysql -u admin -p --host <rds-endpoint>
+```
+<div style="display: flex; align-items: center;">
+    <div style="margin: .1rem; text-align: center;">
+        <h4>RDS Security Group</h4>
+        <img src="assets/rds-migration/rds_sg.png"/>
+    </div>
+    <div style="margin: .1rem; text-align: center;">
+        <h4>RDS Database</h4>
+        <img src="assets/rds-migration/rds_database.png"/>
+    </div>
+</div>
+
+### Importing the data into the RDS database instance
+```sh
+mysql -u admin -p --host <rds-endpoint> < CafeDbDump.sql
+```
+_Ex: "mysql -u admin -p --host **cafedatabase.c1u8466smbzv.us-west-2.rds.amazonaws.com** < CafeDbDump.sql"_
+
+![rds-migrate](assets/rds-migration/rds_migrate.png)
+
+### Connecting the café application to the new database
+Because the database connection information has changed, it will be necessary to update some values to connect the application to the new RDS database instance instead of to the database running on the EC2 instance.
+
+- We must update the value field at the parameter store for **"dbUrl"**,**"dbPassword"** and **"dbUser"**
+![paramter-store](assets/rds-migration/parameter_store.png)
+
+
+<div style="display: flex;">
+    <div style="width: 50%;">
+        <h4 style="text-align: center;">Parameter Store from AWS Systems Manager</h4>
+        <img src="assets/rds-migration/rds_credentials.png"/>
+    </div>
+    <div style="width: 50%;">
+        <h4 style="text-align: center;">RDS Credentials</h4>
+        <ul>
+            <li><span style="font-weight: 700; text-transform: uppercase">RDS Endpoint:</span> cafedatabase.c1u8466smbzv.us-west-2.rds.amazonaws.com</li>
+            <li><span style="font-weight: 700; text-transform: uppercase">RDS Password:</span> some@password</li>
+            <li><span style="font-weight: 700; text-transform: uppercase">RDS User:</span> admin</li>
+        </ul>
+    </div>
+</div>
+
+![app-order](assets/rds-migration/app_order.png)
+---
