@@ -1,6 +1,5 @@
 # Adding a Storage Layer
 ## **Creating a Static Website for the Café**
-
 ### **Scenario**
 
 Frank and Martha are a husband-and-wife team who own and operate a small café business that sells desserts and coffee. Their daughter, Sofía, and their other employee, Nikhil—who is a secondary school student—also work at the café. The café has a single location in a large city.
@@ -108,12 +107,9 @@ By using the AWS Cloud9 environment, tehre's no need to download a key pair and 
 
 ![cloud9](assets/dynamic-website/cloud9.png)
 
-> Observe the web server, database, and PHP details and server state.
+- Observe the web server, database, and PHP details and server state.
 
-<div style="display: flex;">
 
-<img src="assets/dynamic-website/cloud9-stopped.png" width=50% height=50%>
-<code style="width: 100%;">
 
 ```sh
 sudo yum update -y 
@@ -128,18 +124,12 @@ service mariadb status
 
 php --version
 ```
-</code>
-</div>
+<img src="assets/dynamic-website/cloud9-stopped.png">
 
 _Note: The output should show the versions of the web server and the database, and also show that they are not currently running_
 <br>
 
-> So, to start the web server and the database, we'll use these command on terminal
-
-<div style="display: flex;">
-
-<img src="assets/dynamic-website/cloud9-running.png" width=50% height=50%>
-<code style="width: 100%;">
+- So, to start the web server and the database, we'll use these command on terminal
 
 ```sh
 sudo chkconfig httpd on
@@ -150,11 +140,10 @@ sudo chkconfig mariadb on
 sudo service mariadb start
 sudo service mariadb status
 ```
-</code>
-</div>
+<img src="assets/dynamic-website/cloud9-running.png">
 <br>
 
-> Configure the EC2 instance so that we can use the AWS Cloud9 editor to edit web server files.
+- Configure the EC2 instance so that we can use the AWS Cloud9 editor to edit web server files.
 ``` sh
 ln -s /var/www/ /home/ec2-user/environment
 sudo chown ec2-user:ec2-user /var/www/html
@@ -163,7 +152,7 @@ sudo chown ec2-user:ec2-user /var/www/html
 ### Installing a dynamic website application on the EC2 instance
 We have the basic setup for hosting a dynamic website for the café by installing the café application and database on the EC2 instance.
 
-> Installing the café application, which create the cafe, db, and setup directories at work environment
+- Installing the café application, which create the cafe, db, and setup directories at work environment
 
 ```sh
 cd ~/environment
@@ -176,29 +165,45 @@ tar -zxvf cafe.tar.gz
 ```
 _Note: we can put "sudo" before the command in case some **denied access** error appears. In any case, these files will be present in the lab directory as well_
 
-> Copy the café files over to the web server document root
+- Copy the café files over to the web server document root
 ```sh
 mv cafe /var/www/html/
 ```
 
-> Configure the application parameters to use the AWS Systems Manager Parameter Store
+- Configure the application parameters to use the AWS Systems Manager Parameter Store
 ```sh
 cd setup
 ./set-app-parameters.sh
 ```
 
-> Configure the MySQL database to support the café application
+- Configure the MySQL database to support the café application
 ```sh
 cd ../db/
 ./set-root-password.sh
 ./create-db.sh
 ```
 
-> to connect the terminal-based MySQL client to the database and accessin it.
+- to connect the terminal-based MySQL client to the database and accessin it.
 
 ```sh
 mysql -u root -p
 ```
+<br>
+
+> In case of 'ERROR 1698 (28000): Access denied for user 'root'@'localhost'' after placing the password
+
+- Try on it:
+---
+```sh
+sudo mysql -u root -p
+```
+
+```sh
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'Re:Start!9';
+FLUSH PRIVILEGES;
+```
+---
+<br>
 
 ```sh
 show databases;
@@ -208,16 +213,28 @@ select * from product;
 exit;
 ```
 
-> Update the timezone configuration in PHP.
+- Update the timezone configuration in PHP.
 ```sh
 sudo sed -i "2i date.timezone = \"America/New_York\" " /etc/php.ini
 sudo service httpd restart
 ```
 
-> Testing the web application
+### Testing the web application
 ```url
 http://<public-ip>/cafe
 ```
+
+<div style="display: flex; align-items: center;">
+    <div style="margin: .1rem; text-align: center;">
+        <h4>App working</h4>
+        <img src="assets/dynamic-website/app.png"/>
+    </div>
+    <div style="margin: .1rem; text-align: center;">
+        <h4>Ordeing</h4>
+        <img src="assets/dynamic-website/app_order.png"/>
+    </div>
+</div>
+
 ---
 # Adding a Database Layer
 ## Migrating a Database to Amazon RDS
