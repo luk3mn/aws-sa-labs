@@ -103,7 +103,7 @@ _**Note: In the first part of this lab, it will be configured an Amazon EC2 inst
 ![start-arch](/assets/dynamic-website/m4ch-lab-start-arch.png)
 
 ### Connecting to the IDE on the EC2 instance
-By using the AWS Cloud9 environment, tehre's no need to download a key pair and connect to the EC2 instance by using SSH.
+By using the AWS Cloud9 environment, there's no need to download a key pair and connect to the EC2 instance by using SSH.
 
 ![cloud9](assets/dynamic-website/cloud9.png)
 
@@ -152,7 +152,7 @@ sudo chown ec2-user:ec2-user /var/www/html
 ### Installing a dynamic website application on the EC2 instance
 We have the basic setup for hosting a dynamic website for the café by installing the café application and database on the EC2 instance.
 
-- Installing the café application, which create the cafe, db, and setup directories at work environment
+- Installing the café application, which creates the cafe, db, and setup directories in the work environment
 
 ```sh
 cd ~/environment
@@ -183,7 +183,7 @@ cd ../db/
 ./create-db.sh
 ```
 
-- to connect the terminal-based MySQL client to the database and accessin it.
+- to connect the terminal-based MySQL client to the database and accessing it.
 
 ```sh
 mysql -u root -p
