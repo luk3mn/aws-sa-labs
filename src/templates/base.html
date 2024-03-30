@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>AWS SSA Program</title>
+        <link rel="stylesheet" href="css/base.css">
+        <link rel="stylesheet" href="css/article.css">
+        <link rel="stylesheet" href=" {{ url_for('static', filename='css/base.css') }} ">
+        <link rel="stylesheet" href=" {{ url_for('static', filename='css/article.css') }} ">
+        <!-- <link rel="shortcut icon" href="{{ url_for('static', filename='img/spotify-icon.png') }}" type="image/x-icon"> -->
+</head>
+<body>
+    <div class="container">
+
+        <section>
+        
+            <div class="header">
+                <ul>
+                    <a href="storage-layer">
+                        <li>Adding a Storage Layer</li>
+                    </a>
+                    <a href="compute-layer">
+                        <li>Adding a Compute Layer</li>
+                    </a>
+                    <a href="database-layer">
+                        <li>Adding a Database Layer</li>
+                    </a>
+                    <a href="vpc">
+                        <li>Creating a Networking Environment</li>
+                    </a>
+                    <a href="iam">
+                        <li>Securing User and Application Data</li>
+                    </a>
+                    <a href="elastic">
+                        <li>Implementing Elasticity, High Availability, and Monitoring</li>
+                    </a>
+                    <a href="automation">
+                        <li>Automating the Architecture</li>
+                    </a>
+                    <a href="microservices">
+                        <li>Building Microservices and Serverless Architectures</li>
+                    </a>
+                </ul>
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+
+            <div class="article">
+                {% block content %}{% endblock %}
+            </div>
+        
+        </section>
+        <footer>
+            @luke.mn - 2024
+        </footer>
+    </div>
+    <script src="https://kit.fontawesome.com/01edd83a56.js" crossorigin="anonymous"></script>
+</body>
+</html>

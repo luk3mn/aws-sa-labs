@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="article__header">
+    <h1>Migrating a Database to Amazon RDS</h1>
+    <h2>Scenario</h2>
+    <div class="scenario">
+        <p>The café currently uses a single EC2 instance to host their web server, database, and application code.</p>
+
+        <p>Meanwhile, café business has grown. The order history that's stored in the database provides valuable business information that the café staff doesn't want to lose. Martha uses the data for accounting, and Frank looks at it occasionally to plan how many of each dessert type he should bake.</p>
+
+        <p>Sofía has additional concerns. The database must be consistently upgraded and patched, and she doesn’t always have time to do these tasks. Also, administering the database is a specialized skill. Training others to do database administration isn’t something that she wants to spend time on. Meanwhile, Sofía is also concerned that the café isn’t doing data backups as often as they should.</p>
+        
+        <p>Finally, Martha also wants to reduce labor costs that are associated with the technical learning investment that's needed to manage the database.</p>
+    </div>
+    <div class="double-illustration">
+        <div>
+            <h5>Archtecture at the start of the lab</h5>
+            <img src="{{ url_for('static', filename='img/rds-migration/start_arch.png') }}" alt="">
+        </div>
+        <div>
+            <h5>Archtecture at the end of the lab</h5>
+            <img src="{{ url_for('static', filename='img/rds-migration/end_arch.png') }}" alt="">
+        </div>
+    </div>
+    <div class="note">
+        <p>Note: We've already created the architecture of the first image, now we have to migrate it to use RDS instead of using it in an EC2 instance</p>
+    </div>
+</div>
+
+<div class="article__body">
+    
+    <div class="challenge">
+        <!-- <h2>Launching a static website</h2> -->
+
+        <div class="task">
+            <h3>Creating an RDS instance for the café application</h3>
+            <p>We have to choose an architecture where the database should provide essential features such as durability, scalability, and high performance.</p>
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/rds-migration/rds.png') }}" alt="">
+            </div>
+        </div>
+        
+        <div class="task">
+            <h3>Exporting data from the old database and establishing a connection to the new database</h3>
+            <p>With the new RDS instance created, we can move on to the next step in the café's database migration plan by exporting the data from the database that the café application currently uses to the RDS database.</p>
+            
+            <li>Connection to EC2 instance and capture existing data in a file by using the mysqldump utility.</li>
+            
+            <pre>
+                <code>
+mysqldump --databases cafe_db -u root -p > CafeDbDump.sql
+                </code>
+            </pre>
+
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/rds-migration/mysqldump.png') }}" alt="">
+            </div>
+
+        </div>
+
+        <div class="task">
+            <h3>Working with the RDS database</h3>
+            <pre>
+                <code>
+mysql -u admin -p --host [rds-endpoint]
+                </code>
+            </pre>           
+
+            <div class="illustration">
+                <p>RDS Database</p>
+                <img src="{{ url_for('static', filename='img/rds-migration/rds_database.png') }}" alt="">
+            </div>
+
+        </div>
+
+        <div class="task">
+            <h3>Importing the data into the RDS database instance</h3>
+            <pre>
+                <code>
+mysql -u admin -p --host <rds-endpoint> < CafeDbDump.sql
+                </code>
+            </pre>
+            
+            <div class="note">
+                <p>_Ex: "mysql -u admin -p --host **cafedatabase.c1u8466smbzv.us-west-2.rds.amazonaws.com** < CafeDbDump.sql"_</p>
+            </div>
+
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/rds-migration/rds_migrate.png') }}" alt="">
+            </div>
+
+        </div>
+
+        <div class="task">
+            <h3>Connecting the café application to the new database</h3>
+            <p>Because the database connection information has changed, it will be necessary to update some values to connect the application to the new RDS database instance instead of to the database running on the EC2 instance.</p>
+
+            <li>We must update the value field at the parameter store for: "dbUrl", "dbPassword" and "dbUser"</li>
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/rds-migration/parameter_store.png') }}" alt="">
+            </div>
+            
+            <div class="double-illustration">
+                <div>
+                    <h4 style="text-align: center;">Parameter Store from AWS Systems Manager</h4>
+                    <img src="{{ url_for('static', filename='img/rds-migration/rds_credentials.png') }}" alt="">
+                </div>
+                <div>
+                    <h4 style="text-align: center;">RDS Credentials</h4>
+                    <ul>
+                        <li><span style="font-weight: 700; text-transform: uppercase">RDS Endpoint:</span> cafedatabase.c1u8466smbzv.us-west-2.rds.amazonaws.com</li>
+                        <li><span style="font-weight: 700; text-transform: uppercase">RDS Password:</span> some@password</li>
+                        <li><span style="font-weight: 700; text-transform: uppercase">RDS User:</span> admin</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+</div>
+{% endblock %}
