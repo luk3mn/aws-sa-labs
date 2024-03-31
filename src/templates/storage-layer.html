@@ -5,11 +5,16 @@
     <h1>Creating a Static Website for the Café</h1>
     <h2>Scenario</h2>
     <div class="scenario">
-        <p>Frank and Martha are a husband-and-wife team who own and operate a small café business that sells desserts and coffee. Their daughter, Sofía, and their other employee, Nikhil—who is a secondary school student—also work at the café. The café has a single location in a large city.</p>
-
-        <p>The café currently doesn’t have a marketing strategy. They mostly gain new customers when someone walks by, notices the café, and decides to try it. The café has a reputation for high-quality desserts and coffees, but their reputation is limited to people who have visited, or who have heard about them from their customers.</p>
-
-        <p>Sofía suggests to Frank and Martha that they should expand community awareness of what the café has to offer. The café doesn’t have a web presence yet, and it doesn’t currently use any cloud computing services. However, that situation is about to change.</p>
+        <p>Frank and Martha are a husband-and-wife team who own and operate a small café business that sells desserts and coffee. Their daughter, Sofía, and their other employee, Nikhil—who is a secondary school student—also work at the café. The café has a single location in a large city. The café currently doesn’t have a marketing strategy. They mostly gain new customers when someone walks by, notices the café, and decides to try it. The café has a reputation for high-quality desserts and coffees, but their reputation is limited to people who have visited, or who have heard about them from their customers. Sofía suggests to Frank and Martha that they should expand community awareness of what the café has to offer. The café doesn’t have a web presence yet, and it doesn’t currently use any cloud computing services. However, that situation is about to change.</p>
+        <div class="skills">
+            <h3>Skills</h3>
+            <ul>
+                <li>Host a static website by using Amazon S3</li>
+                <li>Implement one way to protect your data with Amazon S3</li>
+                <li>Implement a data lifecycle strategy in Amazon S3</li>
+                <li>Implement a disaster recovery (DR) strategy in Amazon S3</li>
+            </ul>
+        </div>
     </div>
     <div class="illustration">
         <img src="{{ url_for('static', filename='img/s3-website/module-3-challenge-lab-cafe-static-website-architecture.png') }}" alt="">
@@ -20,6 +25,7 @@
     
     <div class="challenge">
         <h2>Launching a static website</h2>
+        <hr>
 
         <div class="task">
             <h3>Creating an S3 bucket to host the static website</h3>
@@ -35,7 +41,7 @@
             <p>Upload the project website folders to the S3 bucket.</p>
             <p>We can use the endpoint link to access the static website.</p>
             
-            <div class="double-illustration">
+            <div class="illustration">
                 <img src="{{ url_for('static', filename='img/s3-website/upload-s3.png') }}" alt="">
                 <img src="{{ url_for('static', filename='img/s3-website/access-denied.png') }}" alt="">
             </div>
@@ -46,7 +52,7 @@
             <p>Create a bucket policy that grants read-only permission to public anonymous users by using the Bucket Policy editor</p>
             <p>the website for the café is now publicly accessible.</p>
             
-            <div class="double-illustration">
+            <div class="illustration">
                 <img src="{{ url_for('static', filename='img/s3-website/policy-public-access.png') }}" alt="">
                 <img src="{{ url_for('static', filename='img/s3-website/web-page.png') }}" alt="">
             </div>
@@ -65,6 +71,7 @@
     
     <div class="challenge">
         <h2>Optimizing costs of S3 object storage</h2>
+        <hr>
         
         <div class="task">
             <h3>Setting lifecycle policies</h3>
@@ -72,7 +79,7 @@
             <li>In one rule, move previous versions of all source bucket objects to S3 Standard-IA after 30 days</li>
             <li>The other rule, delete previous versions of the objects after 365 days</li>
             
-            <div class="double-illustration">
+            <div class="illustration">
                 <img src="{{ url_for('static', filename='img/s3-website/move.png') }}" alt="">
                 <img src="{{ url_for('static', filename='img/s3-website/delete.png') }}" alt="">
             </div>
@@ -81,16 +88,12 @@
         <div class="task">
             <h3>Enhancing durability and planning for DR</h3>
             <p>In a different Region than the source bucket, create a second bucket and enable versioning on it. The second bucket will be the destination bucket</p>
-            <p>It was used the **CafeRole** for the AWS Identity and Access Management (IAM) role. This IAM role gives Amazon S3 permission to read objects from the source bucket and replicate them to the destination bucket.</p>
+            <p>It was used the <b>CafeRole</b> for the AWS Identity and Access Management (IAM) role. This IAM role gives Amazon S3 permission to read objects from the source bucket and replicate them to the destination bucket.</p>
 
-            <div class="illustration">
-                <p>Replication</p>
-                <img src="{{ url_for('static', filename='img/s3-website/replication.png') }}" alt="">
-            </div>
-
-            <p>CafeRole</p>
-            <pre>
-                <code>
+            <div class="code__block">
+                <h4>CafeRole</h4>
+                <pre>
+                    <code>
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -109,11 +112,20 @@
         }
     ]
 }
-                </code>
-            </pre>
+                    </code>
+                </pre>
+        </div>
+
+        <div class="illustration">
+            <div>
+                <h4>Replication</h4>
+                <img src="{{ url_for('static', filename='img/s3-website/replication.png') }}" alt="">
+            </div>
         </div>
 
     </div>
 
 </div>
+            </div>
+            
 {% endblock %}

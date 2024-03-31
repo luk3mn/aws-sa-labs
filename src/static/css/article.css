@@ -1,6 +1,15 @@
 
 
-/* Code Pattern */
+
+.container > header > .diagram {
+    margin: .5rem 0;
+}
+
+/* ================================================= */
+
+/* ============ */
+/* = PATTERNS = */
+/* ============ */
 p {
     text-align: justify;
 }
@@ -18,69 +27,105 @@ pre {
     border-radius: .5rem;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: .2rem 0;
-    padding: 0 .6rem;
-}
+    padding: 0 1rem;
 
-.illustration {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: .5rem 0;
-}
-
-.illustration img {
     width: 100%;
-}
-
-.double-illustration {
-    display: flex;
-    /* padding: .5rem; */
-    width: 100%;
-}
-
-.double-illustration img:nth-child(1) {
-    width: 50%;
-    margin-right: .1rem;
-}
-
-.double-illustration img:nth-child(2) {
-    width: 50%;
-    margin-left: .1rem;
+    max-width: 630px;
 }
 
 .warning {
-    /* display: flex; */
-    
-    background-color: rgb(211, 211, 211);
-    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.warning__box {
+    display: flex;
+    flex-direction: column;
+
+    background-color: rgb(190, 190, 190);
+    width: 630px;
 
     border-radius: 1rem;
-    padding: .5rem;
-}
-
-.warning > div {
-    display: flex;
-    align-items: center;
-    padding: .6rem;
-}
-
-.warning > div > i {
-    color: orange;
-    margin-right: .6rem;
+    padding: 1rem;
 }
 
 .note {
     margin: .3rem .6rem;
-    text-align: justify;
+    text-align: center;
     font-style: italic;
     font-size: .9rem;
 }
 
-.container > header > .diagram {
-    margin: .5rem 0;
+.article img {
+    width: 100%;
+    max-width: 630px;
+    margin: .1rem;
 }
 
-/* ================================================= */
-.article .article__header {
-    border: 2px solid #44475A;
+.article .illustration {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    text-align: center;
+}
+
+/* =================== */
+/* = ARTICLE HEADER  =*/
+/* =================== */
+.article > .article__header {
+    padding: .8rem;
+    background-color: var(--bg-header);
+    color: var(--text-code-snippet);
+    border-radius: 1rem;
+}
+
+.article > .article__header > .skills {
+    background-color: var(--bg-code-snippet);
+    padding: 1rem;
+    border-radius: 1rem;
+    margin: .5rem 3rem;
+}
+
+.article > .article__header .skills > ul > li {
+    margin: .1rem 2rem;
+} 
+
+/* ================ */
+/* = ARTICLE BODY = */
+/* ================ */
+.article .article__body > .challenge {
+    padding: .5rem;
+    margin: 1rem 0;
+    background-color: var(--bg-challenge);
+    border-radius: 1rem;
+    border: 1px dashed var(--bg-header);
+}
+
+.article .article__body > .challenge > h2 {
+    text-transform: uppercase;
+}
+
+.article > .article__body > .challenge > .task {
+    padding: .3rem 0;
+}
+
+.article > .article__body > .challenge .code__block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.warning > .warning__box > .message {
+    display: flex;
+    align-items: center;
+
+    padding: .5rem;
+}
+
+.warning > .warning__box > .message > i {
+    color: rgb(197, 128, 37);
+    font-size: 3rem;
+    margin-right: 1rem;
 }

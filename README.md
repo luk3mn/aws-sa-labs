@@ -1,4 +1,4 @@
-<a name="aws-ssa-lab"></a>
+<a name="aws-sa-labs"></a>
 
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
@@ -12,7 +12,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/luk3mn/aws-ssa-lab">
+  <a href="https://github.com/luk3mn/aws-sa-labs">
     <img width="70" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/AWS_Simple_Icons_AWS_Cloud.svg/1024px-AWS_Simple_Icons_AWS_Cloud.svg.png">
   </a>
 
@@ -21,7 +21,7 @@
   <p align="center">
     AWS Training Solutions Architect labs documentation
     <br />
-    <a href="https://github.com/luk3mn/aws-ssa-lab/README.md"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/luk3mn/aws-sa-labs/README.md"><strong>Explore the docs »</strong></a>
     <br />
     <br />
   </p>
@@ -64,7 +64,7 @@
 </p> 
 
 
-<p align="right">(<a href="#aws-ssa-lab">back to top</a>)</p>
+<p align="right">(<a href="#aws-sa-labs">back to top</a>)</p>
 
 
 
@@ -79,7 +79,7 @@ Write here
 * [![HTML][HTML]][HTML-url]
 * [![CSS][CSS]][CSS-url]
 
-<p align="right">(<a href="#aws-ssa-lab">back to top</a>)</p>
+<p align="right">(<a href="#aws-sa-labs">back to top</a>)</p>
 
 
 
@@ -94,10 +94,10 @@ _Before starting this application in your local environment, it'll be necessary 
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/luk3mn/aws-ssa-lab.git
+   git clone https://github.com/luk3mn/aws-sa-labs.git
    ```
 
-<p align="right">(<a href="#aws-ssa-lab">back to top</a>)</p>
+<p align="right">(<a href="#aws-sa-labs">back to top</a>)</p>
 
 
 
@@ -126,7 +126,7 @@ _Before starting this application in your local environment, it'll be necessary 
 
 
 
-<p align="right">(<a href="#aws-ssa-lab">back to top</a>)</p>
+<p align="right">(<a href="#aws-sa-labs">back to top</a>)</p>
 
 <!-- ## Lessons Learned
 
@@ -137,7 +137,7 @@ What did you learn while building this project? What challenges did you face and
 
 <!-- Distributed under the MIT License. See `LICENSE.txt` for more information. -->
 
-<p align="right">(<a href="#aws-ssa-lab">back to top</a>)</p>
+<p align="right">(<a href="#aws-sa-labs">back to top</a>)</p>
 
 
 <!-- CONTACT -->
@@ -149,9 +149,9 @@ What did you learn while building this project? What challenges did you face and
 
 If you have any feedback, please reach out to us at lucasnunes2030@gmail.com
 
-> Project Link: [https://github.com/luk3mn/aws-ssa-lab](https://github.com/luk3mn/aws-ssa-lab)
+> Project Link: [https://github.com/luk3mn/aws-sa-labs](https://github.com/luk3mn/aws-sa-labs)
 
-<p align="right">(<a href="#aws-ssa-lab">back to top</a>)</p>
+<p align="right">(<a href="#aws-sa-labs">back to top</a>)</p>
 
 
 <!-- ACKNOWLEDGMENTS -->
@@ -160,22 +160,22 @@ If you have any feedback, please reach out to us at lucasnunes2030@gmail.com
 * [AWS Documentation](https://docs.aws.amazon.com/)
 
 
-<p align="right">(<a href="#aws-ssa-lab">back to top</a>)</p>
+<p align="right">(<a href="#aws-sa-labs">back to top</a>)</p>
 
 
 
 <!-- MARKDOWN LINKS & IMAGES --
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/luk3mn/aws-ssa-lab.svg?style=for-the-badge
-[contributors-url]: https://github.com/luk3mn/aws-ssa-lab/graphs/contributors
-[issues-shield]: https://img.shields.io/github/issues/luk3mn/aws-ssa-lab.svg?style=for-the-badge
-[issues-url]: https://github.com/luk3mn/aws-ssa-lab/issues
-[forks-shield]: https://img.shields.io/github/forks/luk3mn/aws-ssa-lab.svg?style=for-the-badge
-[forks-url]: https://github.com/luk3mn/aws-ssa-lab/network/members
-[stars-shield]: https://img.shields.io/github/stars/luk3mn/aws-ssa-lab.svg?style=for-the-badge
-[stars-url]: https://github.com/luk3mn/aws-ssa-lab/stargazers
+[contributors-shield]: https://img.shields.io/github/contributors/luk3mn/aws-sa-labs.svg?style=for-the-badge
+[contributors-url]: https://github.com/luk3mn/aws-sa-labs/graphs/contributors
+[issues-shield]: https://img.shields.io/github/issues/luk3mn/aws-sa-labs.svg?style=for-the-badge
+[issues-url]: https://github.com/luk3mn/aws-sa-labs/issues
+[forks-shield]: https://img.shields.io/github/forks/luk3mn/aws-sa-labs.svg?style=for-the-badge
+[forks-url]: https://github.com/luk3mn/aws-sa-labs/network/members
+[stars-shield]: https://img.shields.io/github/stars/luk3mn/aws-sa-labs.svg?style=for-the-badge
+[stars-url]: https://github.com/luk3mn/aws-sa-labs/stargazers
 [license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/luk3mn/aws-ssa-lab/blob/master/LICENSE
+[license-url]: https://github.com/luk3mn/aws-sa-labs/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/lucasmaues/
 [general-code-screenshot]: assets/general-project.png
