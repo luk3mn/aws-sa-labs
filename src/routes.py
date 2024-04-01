@@ -7,7 +7,7 @@ page_bp = Blueprint("page_routes", __name__,
 
 @page_bp.route("/")
 def index():
-    return render_template("base.html")
+    return render_template("index.html")
 
 @page_bp.route("/storage-layer")
 def storage_layer():

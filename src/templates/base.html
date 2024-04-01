@@ -4,12 +4,12 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>AWS SSA Program</title>
+        <title>{% block title %}{% endblock %}</title>
         <link rel="stylesheet" href="css/base.css">
         <link rel="stylesheet" href="css/article.css">
         <link rel="stylesheet" href=" {{ url_for('static', filename='css/base.css') }} ">
         <link rel="stylesheet" href=" {{ url_for('static', filename='css/article.css') }} ">
-        <!-- <link rel="shortcut icon" href="{{ url_for('static', filename='img/spotify-icon.png') }}" type="image/x-icon"> -->
+        <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
 </head>
 <body>
     <div class="container">
@@ -17,7 +17,10 @@
         <section>
         
             <div class="header">
-                <ul>
+                <ul id="slide-bar">
+                    <a href="/">
+                        <i class="fa-solid fa-house"></i>
+                    </a>
                     <a href="storage-layer">
                         <li>Adding a Storage Layer</li>
                     </a>
@@ -43,7 +46,7 @@
                         <li>Building Microservices and Serverless Architectures</li>
                     </a>
                 </ul>
-                <i class="fa-solid fa-chevron-down"></i>
+                <i id="btn-slide-bar" class="fa-solid fa-chevron-down"></i>
             </div>
 
             <div class="article">
@@ -56,5 +59,6 @@
         </footer>
     </div>
     <script src="https://kit.fontawesome.com/01edd83a56.js" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

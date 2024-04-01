@@ -53,9 +53,8 @@ html {
     justify-content: center;
     align-items: center;
 
-    height: 50px;
     overflow: hidden;
-    /* padding: .5rem; */
+    /* transition: cubic-bezier(0.075, 0.82, 0.165, 1); */
 }
 
 .container > section > .header > ul > a {
@@ -70,8 +69,10 @@ html {
 }
 
 .container > section > .header > i {
-    font-size: 1.5rem;
+    font-size: 2rem;
     margin: .1rem;
+    rotate: 180deg;
+    cursor: pointer;
 }
 
 .container > section > .header > ul :hover {
@@ -125,7 +126,7 @@ html {
     }
 
     .container > section > .header > i {
-        rotate: -90deg;
+        rotate: 90deg;
     }
     
 }

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title%} AWS Solutions Architect {% endblock %}
+
+{% block content %}
+<div class="article__header">
+    <h1>AWS Solutions Architect Labs</h1>
+    <h2>Scenario</h2>
+    <div class="scenario">
+        <p>This web page project was a way I've found to share my knowledge and experiences during the 8 weeks of AWS Solutions Architect training where I've spent several hours in different labs in order to improve my cloud abilities and learn even more about the AWS services. So then, I've compiled every each lab about the café use case architecture implementation to showcase my results and the progress I've achieved during this time.</p>
+        <div class="skills">
+            <!-- <h3>What I've learned</h3>
+            <ul>
+                <li></li>
+            </ul> -->
+        </div>
+    </div>
+    <div class="illustration">
+        <div>
+            <h6>The final architecture should look like the following example</h6>
+            <img src="{{ url_for('static', filename='img/aws_services.png') }}" alt="">
+        </div>
+    </div>
+</div>
+
+<div class="article__body">
+
+</div>
+{% endblock %}

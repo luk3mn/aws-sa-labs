@@ -43,7 +43,8 @@ pre {
     flex-direction: column;
 
     background-color: rgb(190, 190, 190);
-    width: 630px;
+    width: 100%;
+    max-width: 630px;
 
     border-radius: 1rem;
     padding: 1rem;
