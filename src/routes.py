@@ -20,3 +20,7 @@ def compute_layer():
 @page_bp.route("/database-layer")
 def database_layer():
     return render_template('database-layer.html')
+
+@page_bp.route("/vpc")
+def vpc():
+    return render_template('vpc.html')

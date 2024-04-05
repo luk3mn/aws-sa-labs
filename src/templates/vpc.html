@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block title%} Creating a Networking Environment {% endblock %}
+
+{% block content %}
+<div class="article__header">
+    <h1>Creating a VPC Networking Environment for the Café</h1>
+    <h2>Scenario</h2>
+    <div class="scenario">
+        <p>Sofía and Nikhil are now confident in their ability to create a two-tier architecture because of their experience migrating the café's data. They successfully moved from a MariaDB database on an Amazon Elastic Compute Cloud (Amazon EC2) instance to an Amazon Relational Database Service (Amazon RDS) database instance. In addition, they also moved their database resources from a public subnet to a private subnet.</p>
+        <p>When Mateo—a café regular and an AWS systems administrator and engineer—visits the café, Sofía and Nikhil tell him about the database migration. Mateo tells them that they can enhance security by running the café's application server in another private subnet that's separate from the database instance. They could then go through a bastion host (or jump box) to gain administrative access to the application server. The application server must also be able to download needed patches.</p>
+        <p>Knowing that the cloud makes experimentation easier, Sofía and Nikhil are eager to set up a non-production VPC environment. They can use it implement the new architecture and test different security layers, without accidentally disrupting the café's production environment.</p>
+        <div class="skills">
+            <h3>Skills</h3>
+            <ul>
+                <li>Create a virtual private cloud (VPC) environment that enables you to securely connect to private resources</li>
+                <li>Enable your private resources to connect to the internet</li>
+                <li>Create an additional layer of security in your VPC to control traffic to and from private resources</li>
+            </ul>
+        </div>
+    </div>
+    <div class="illustration">
+        <div>
+            <h5>Archtecture at the end of the lab</h5>
+            <img style="background-color: rgb(255, 255, 255); padding: .3rem;" src="{{ url_for('static', filename='img/vpc/module-6-challenge-lab-final-architecture.png') }}" alt="">
+        </div>
+    </div>
+</div>
+
+<div class="article__body">
+    
+    <div class="challenge">
+        <h2>Creating a VPC network that allows café staff to remotely and securely administer the web application server</h2>
+        <p>We've created and configure a VPC network so that we can securely connect from a bastion host in a public subnet to an EC2 instance in a private subnet, and on top of that, to create and configure a VPC network so that you can securely connect from a bastion host in a public subnet to an EC2 instance in a private subne</p>
+        <div class="illustration">
+            <div>
+                <h4>Initial VPC</h4>
+                <img src="{{ url_for('static', filename='img/vpc/vpc-creating.png') }}" alt="">
+            </div>
+            <div>
+                <h4>Final VPC</h4>
+                <img src="{{ url_for('static', filename='img/vpc/vpc_final.jpg') }}" alt="">
+            </div>
+        </div>
+        <hr>
+
+        <div class="task">
+            <h3>Creating a public subnet</h3>
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/vpc/public-subnet.png') }}" alt="">
+            </div>
+            
+            <p>We need to create a new internet gateway and attaching it to the Lab VPC. On top of that, we'll edit the route table that was created in VPC to Add the route 0.0.0.0/0 and selecting the internet gateway that was created in the previous as target</p>
+            <div class="illustration">
+                <div>
+                    <h4>New internet gateway</h4>
+                    <img src="{{ url_for('static', filename='img/vpc/internet-gateway.jpg') }}" alt="">
+                </div>
+                <div>
+                    <h4>Assossiating internet gateway to Lab VPC in the Public Route Table</h4>
+                    <img src="{{ url_for('static', filename='img/vpc/internet-gateway_route-table.jpg') }}" alt="">
+                </div>
+            </div>
+        </div>
+
+        <div class="task">
+            <h3>Creating a bastion host</h3>
+            <p>By this moment we don't have any IP address assossiated to the instance, because we'll allocate a new Elastic IP address to it</p>
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/vpc/bastion-host.png') }}" alt="">
+            </div>
+        </div>
+
+        <div class="task">
+            <h3>Allocating an Elastic IP address for the bastion host</h3>
+            <div class="illustration">
+                <div>
+                    <h4>Allocating a new Elastic IP Address</h4>
+                    <img src="{{ url_for('static', filename='img/vpc/elastic-ip.jpg') }}" alt="">
+                </div>
+                <div>
+                    <h4>Assossiating the new Elastic IP Address to bastion Host has created before</h4>
+                    <img src="{{ url_for('static', filename='img/vpc/elastic-ip_assossiation.jpg') }}" alt="">
+                </div>
+            </div>
+        </div>
+
+        <div class="task">
+            <h3>Creating a private subnet</h3>
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/vpc/private-subnet.png') }}" alt="">
+            </div>
+        </div>
+
+        <div class="task">
+            <h3>Creating a NAT gateway</h3>
+            <div class="illustration">
+                <div>
+                    <h4>New NAT Gatway</h4>
+                    <img src="{{ url_for('static', filename='img/vpc/nat-gateway.png') }}" alt="">
+                </div>
+                <div>
+                    <h4>Assossiating the NAT Gataway to Lab VPC in the Private Route Table</h4>
+                    <img src="{{ url_for('static', filename='img/vpc/nat-gateway_route-table.jpg') }}" alt="">
+                </div>
+            </div>
+        </div>
+
+        <div class="task">
+            <h3>Creating an EC2 instance in the private subnet</h3>
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/vpc/private-instance.jpg') }}" alt="">
+            </div>
+        </div>
+
+        <div class="task">
+            <h3>Configuring your SSH client for SSH passthrough and testing the SSH connection from the bastion host</h3>
+            <p>We must establish a communication between the Bastion Host in the Public Subnet and the EC2 instance in the Private Subnet. In that case, we have to connect to the <b>bastion host</b> instance by using SSH and then, to connect to the private instance by using <b>SSH</b> and the <b>IP address</b> for the private instance</p>
+
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/vpc/private-instance_ssh-connection.jpg') }}" alt="">
+            </div>
+
+            <div class="code__block">
+                <h4>Connecting in the private instance through bastion host</h4>
+                <pre>
+                    <code>
+ssh ec2-user@[private-ip-address-of-instance-in-private-subnet]
+                    </code>
+                </pre>
+
+                <h4>Test its connection to the internet, after connecting to the EC2 instance in the Private Subnet</h4>
+                <pre>
+                    <code>
+ping 8.8.8.8
+                    </code>
+                </pre>
+            </div>
+
+            <div class="illustration">
+                <div>
+                    <h4>Connection between public and private subnet</h4>
+                    <img src="{{ url_for('static', filename='img/vpc/private-instance_testing.jpg') }}" alt="">
+                </div>
+                <div>
+                    <h4>Diagram to demostrate the established communication </h4>
+                    <img src="{{ url_for('static', filename='img/vpc/module-6-challenge-lab-bastion-to-private.png') }}" alt="">
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="challenge">
+        <h2>Enhancing the security layer for private resources</h2>
+        <p>After establishing secure access from the bastion host to the EC2 instance in the private subnet, we must enhance the security layer of the private subnet through a custom network ACL </p>
+        <hr>
+
+        <div class="task">
+            <h3>Creating a network ACL</h3>
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/vpc/acl_inbound.jpg') }}" alt="">
+                <img src="{{ url_for('static', filename='img/vpc/acl_outbound.jpg') }}" alt="">
+            </div>
+        </div>
+
+        <div class="task">
+            <h3>Testing your custom network ACL</h3>
+            <div class="illustration">
+                <div>
+                    <h4>Allows All ICMP</h4>
+                    <img src="{{ url_for('static', filename='img/vpc/acl_testing.jpg') }}" alt="">
+                </div>
+            </div>
+
+            <p>Modifying the custom network ACL to deny All ICMP – IPv4 traffic to the private IP address of the test instance. So then, the Private Instance will be able to receive all ICMP traffic except from the Test Instance.</p>
+            <div class="illustration">
+                <div>
+                    <h4>Denying All ICMP comes from Test Instance</h4>
+                    <img src="{{ url_for('static', filename='img/vpc/acl_blocking_traffic.jpg') }}" alt="">
+                </div>
+                <div>
+                    <h4>Diagram</h4>
+                    <img src="{{ url_for('static', filename='img/vpc/module-6-challenge-lab-private-to-test.png') }}" alt="">
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+{% endblock %}
