@@ -24,3 +24,7 @@ def database_layer():
 @page_bp.route("/vpc")
 def vpc():
     return render_template('vpc.html')
+
+@page_bp.route("/iam")
+def iam():
+    return render_template('iam.html')

@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+
+{% block title%} Securing User and Application Data {% endblock %}
+
+{% block content %}
+<div class="article__header">
+    <h1>Controlling AWS Account Access by Using IAM</h1>
+    <h2>Scenario</h2>
+    <div class="scenario">
+        <p>After speaking with Mateo about the café's AWS infrastructure, Sofía realized that she must address some basic security concerns about the way that the café staff has been using the AWS account.</p>
+        <p>The café is now large enough that team members who build, maintain, or access applications on AWS are specializing into roles (such as developer or database administrator). Up to now, they haven’t made an effort to clearly define what level of access each user should have based on their roles and responsibilities.</p>
+        <p>Sofía spent some time thinking about what each person should be able to do in the account, especially with AWS Cloud9, Amazon Elastic Compute Cloud (Amazon EC2) and Amazon Relational Database Service (Amazon RDS). She made some decisions and created this chart, which describes how she would like to define access rights in the AWS account:</p>
+        <div class="skills">
+            <h3>Skills</h3>
+            <ul>
+                <li>Create IAM users and IAM groups, and associate IAM policies with IAM groups</li>
+                <li>Indicate how limited access rights affect what resources IAM users can access and what actions they can take</li>
+                <li>Use AWS managed IAM policies to modify user access rights and observe the results</li>
+                <li>Use the IAM Policy Simulator to observe the scope of the access that is granted by different policies</li>
+                <li>Access the IAM Access Advisor to observe what access rights different users are taking advantage of</li>
+                <li>Create custom IAM policies by using the visual editor</li>
+            </ul>
+        </div>
+    </div>
+    <table style="display: flex; justify-content: center; margin: 1.5rem 0;">
+        <tr>
+            <th style="border: 1px solid #3a3a3a; padding: .3rem;">IAM Group</th>
+            <th style="border: 1px solid #3a3a3a; padding: .3rem">IAM User</th>
+            <th style="border: 1px solid #3a3a3a; padding: .3rem">AWS service access</th>
+        </tr>
+        <tr>
+            <th style="border: 1px solid #3a3a3a; padding: .3rem">AppDevelopers</th>
+            <th style="border: 1px solid #3a3a3a; padding: .3rem">Nikhil</th>
+            <th style="border: 1px solid #3a3a3a; padding: .3rem">AWS Cloud9 access to Amazon EC2 development environment.Also, read-only access to Amazon EC2.</th>
+        </tr>
+        <tr>
+            <th style="border: 1px solid #3a3a3a; padding: .3rem">DBAdministrators</th>
+            <th style="border: 1px solid #3a3a3a; padding: .3rem">Olivia</th>
+            <th style="border: 1px solid #3a3a3a; padding: .3rem">Full access to Amazon RDS.Also, full access to AWS Systems Manager.</th>
+        </tr>
+    </table>
+    <div class="illustration">
+        <div>
+            <h5>Archtecture at the end of the lab</h5>
+            <img style="background-color: rgb(255, 255, 255); padding: .3rem;" src="{{ url_for('static', filename='img/iam/arch-after-task-1.png') }}" alt="">
+        </div>
+        <div>
+            <h5>Archtecture at the end of the lab</h5>
+            <img style="background-color: rgb(255, 255, 255); padding: .3rem;" src="{{ url_for('static', filename='img/iam/arch-end-lab.png') }}" alt="">
+        </div>
+    </div>
+</div>
+
+<div class="article__body">
+    
+    <div class="challenge">
+        <h2>Configuring AWS account access for application developers</h2>
+        <p>The cafe wants to configure access permissions that are appropriate for application developers. We'll configure the access and test the access for application developers.</p>
+        <hr>
+
+        <div class="task">
+            <h3>Configuring an IAM group with policies and an IAM user</h3>
+            <p>First, we have to create an IAM group named AppDevelopers and create an IAM user, and then, we'll add the user to the AppDevelopers group</p>
+            <div class="illustration">
+                <div>
+                    <h4>AppDevelopers group</h4>
+                    <img src="{{ url_for('static', filename='img/iam/iam_dev_group.png') }}" alt="">
+                </div>
+                <div>
+                    <h4>IAM user</h4>
+                    <img src="{{ url_for('static', filename='img/iam/iam_dev_user.png') }}" alt="">
+                </div>
+            </div>
+
+            <p>The next step is connect to the AWS Cloud9 IDE and set up the café web application by opening the IDE <b>AWS Cloud9</b> service page and for <b>DEVCafeServer</b>, so then, it's just running these three commands in the Bash terminal window before Sharing the AWS Cloud9 environment with the developer user</p>
+            <div class="code__block">
+                <pre>
+                    <code>
+wget https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/CUR-TF-100-PRYODA-1-37918/26-mod8-challenge-IAM/s3/mod8-challenge/install-cafe-app.sh
+chmod +x install-cafe-app.sh
+./install-cafe-app.sh
+                    </code>
+                </pre>
+            </div>
+
+            <div class="illustration">
+                <div>
+                    <h4>Sharing the AWS Cloud9 environment with other users</h4>
+                    <img src="{{ url_for('static', filename='img/iam/cloud9_sharing.png') }}" alt="">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="task">
+            <h3>Logging in as Developer user and testing access the Development server</h3>
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/iam/dev_user_login.png') }}" alt="">
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="challenge">
+        <h2>Configuring IAM for database administrator user access</h2>
+        <p>Now we need to define the AWS account access rights for database administrators. So, we must create an IAM user resource so that DBAdministrator can log in to the account.</p>
+        <hr>
+
+        <div class="task">
+            <h3>Configuring IAM for database administrator user access</h3>
+            <p>First, we have to create an IAM group named AppDevelopers with permissions <b>AmazonRDSReadOnlyAccess</b> and <b>AmazonSSMFullAccess</b>, and create an IAM user, and then, we'll add the user to the AppDevelopers group. So, as same as in Develepor group, We'll Create an IAM user with access to the AWS Management Console and add it to the DBAdministrators group</p>
+            <div class="illustration">
+                <div>
+                    <h4>DBAdministrators group</h4>
+                    <img src="{{ url_for('static', filename='img/iam/iam_db_group.png') }}" alt="">
+                </div>
+                <div>
+                    <h4>IAM user</h4>
+                    <img src="{{ url_for('static', filename='img/iam/iam_db_user.png') }}" alt="">
+                </div>
+            </div>
+        </div>
+        
+        <div class="task">
+            <h3>Logging in as the database administrator and resolving the database connectivity issue</h3>
+            <p>Atfer logging as DBAdministrator, we can see the RDS database access, this user doesn't have any permission to access EC2 instance, so we must to grant to it</p>
+            <div class="illustration">
+                <div>
+                    <h4>RDS Access</h4>
+                    <img src="{{ url_for('static', filename='img/iam/rds_access.png') }}" alt="">
+                </div>
+                <div>
+                    <h4>EC2 Instance with no permission</h4>
+                    <img src="{{ url_for('static', filename='img/iam/ec2_error.png') }}" alt="">
+                </div>
+            </div>
+
+            <p>To solve it, we must open the <b>DBAdministrators</b> group as <b>Administrator</b> user, and attaching these policies: <b>AmazonEC2ReadOnlyAccess</b> and <b>IAMReadOnlyAccess</b></p>
+            <div class="illustration">
+                <div>
+                    <h4>DBAdministrators group</h4>
+                    <img src="{{ url_for('static', filename='img/iam/dbadmin_grant.png') }}" alt="">
+                </div>
+                <div>
+                    <h4>IAM User</h4>
+                    <img src="{{ url_for('static', filename='img/iam/dbuser_grant.png') }}" alt="">
+                </div>
+            </div>
+
+            <p>As soon as we come back to DB user, we can refresh the instances page of the Amazon EC2 console and start using it normally</p>
+            <div class="illustration">
+                <div>
+                    <h4>EC2 Instance Console</h4>
+                    <img src="{{ url_for('static', filename='img/iam/ec2_granted.png') }}" alt="">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="challenge">
+        
+        <h2>Refining IAM user access</h2>
+        <p>In this task we'll work to define a custom IAM policy that reduces the number of allowed IAM actions that are granted to members of the database administrators group. However, we must also grant them enough IAM access to accomplish their job responsibilities.</p>
+        <hr>
+
+        <div class="task">
+            <h3>Creating a custom IAM policy</h3>
+            <div class="illustration">
+                <div>
+                    <h4>Modifying permissions in <b>LimitedIamPolicy</b></h4>
+                    <img src="{{ url_for('static', filename='img/iam/limited_policy.png') }}" alt="">
+                </div>
+            </div>
+            <div class="illustration">
+                <div>
+                    <h4> Attach the <b>LimitedIamPolicy</b> policy</h4>
+                    <h4>Detach the <b>IAMReadOnlyAccess</b> policy</h4>
+                    <img src="{{ url_for('static', filename='img/iam/dbAdmin_limited_policy.png') }}" alt="">
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+{% endblock %}
