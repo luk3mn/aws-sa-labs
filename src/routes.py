@@ -28,3 +28,7 @@ def vpc():
 @page_bp.route("/iam")
 def iam():
     return render_template('iam.html')
+
+@page_bp.route("/elastic")
+def elastic():
+    return render_template('elastic.html')

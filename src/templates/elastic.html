@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block title%} Implementing Elasticity, High Availability, and Monitoring {% endblock %}
+
+{% block content %}
+<div class="article__header">
+    <h1>Creating a Scalable and Highly Available Environment for the Café</h1>
+    <h2>Scenario</h2>
+    <div class="scenario">
+        <p>The café will soon be featured in a famous TV food show. When it airs, Sofía and Nikhil anticipate that the café’s web server will experience a temporary spike in the number of users—perhaps even up to tens of thousands of users. Currently, the café’s web server is deployed in one Availability Zone, and they are worried that it won’t be able to handle the expected increase in traffic. They want to ensure that their customers have a great experience when they visit the website, and that they don’t experience any issues, such as lags or delays in placing orders.</p>
+        <p>To ensure this experience, the website must be responsive, able to scale both up and down to meet fluctuating customer demand, and be highly available. Instead of overloading a single server, the architecture must distribute customer order requests across multiple application servers so it can handle the increase in demand.</p>
+        <div class="skills">
+            <h3>Skills</h3>
+            <ul>
+                <li>Inspect a VPC</li>
+                <li>Update a network to work across multiple Availability Zones</li>
+                <li>Create an Application Load Balancer</li>
+                <li>Create a launch template</li>
+                <li>Create an Auto Scaling group</li>
+                <li>Test load balancing and automatic scaling</li>
+            </ul>
+        </div>
+    </div>
+    <div class="illustration">
+        <div>
+            <h4>Inital Archtecture</h4>
+            <img style="background-color: rgb(255, 255, 255); padding: .3rem;" src="{{ url_for('static', filename='img/elastic/module-9-challenge-lab-starting-architecture.png') }}" alt="">
+        </div>
+        <div>
+            <h4>Final Archtecture</h4>
+            <img style="background-color: rgb(255, 255, 255); padding: .3rem;" src="{{ url_for('static', filename='img/elastic/module-9-challenge-lab-final-architecture.png') }}" alt="">
+        </div>
+    </div>
+</div>
+
+<div class="article__body">
+    
+    <div class="challenge">
+        <h2>Implementing a scalable and highly available environment</h2>
+        <p>In order to prevent fail and grant high availability and scalability for the café’s web application, we have to change the application architecture to improve it.</p>
+        <hr>
+        
+        <div class="task">
+            <h3>Creating a NAT gateway for the second Availability Zone</h3>
+            <p>We'll create a NAT gateway in the <b>Public Subnet</b> in the second Availability Zone and configure the network to send internet-bound traffic from instances in <b>Private Subnet 2</b> to the NAT gateway you just created.</p>
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/elastic/nat_gateway.png') }}" alt="">
+            </div>
+        </div>
+
+        <div class="task">
+            <h3>Creating a bastion host instance in a public subnet</h3>
+            <p>We'll create a bastion host in a public subnet to connect in the instances in a private subnet by using this bastion host.</p>
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/elastic/bastion_host.png') }}" alt="">
+            </div>
+        </div>
+
+        <div class="task">
+            <h3>Creating a launch template</h3>
+            <p>Bafore provisining a auto scaling group, we have to set up a launch template to support the EC2 instance that will be used by Auto Scaling to grant scalability for Café application</p>
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/elastic/launch_template.png') }}" alt="">
+            </div>
+        </div>
+
+        <div class="task">
+            <h3>Creating an Auto Scaling group</h3>
+            <p>Now that the launch template is defined, we'll create an Auto Scaling group for the instances. So then, as soon as we finish setting up the Auto Scaling Group, we might verify that the Auto Scaling group has been created correctly, we can check out the Amazon EC2 console and we should have two instances, both with the name that was configured as resource tags in the previous task.</p>
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/elastic/auto_scaling_group.png') }}" alt="">
+            </div>
+        </div>
+
+        <div class="task">
+            <h3>Creating a load balancer</h3>
+            <p>Now that we have the web application server instances running and deployed in private subnets, we'll need to find a way to connect to them by internet. So then, it's time to create a load balancer to distribute traffic across the private instances and grant a high archtecture to the Café's application, on top of that, we have to modifying the Auto Scaling group by adding this new load balancer to support the application.</p>
+            <div class="illustration">
+                <div>
+                    <h4>Creating Application Load Balancing</h4>
+                    <img src="{{ url_for('static', filename='img/elastic/load_balander.png') }}" alt="">
+                </div>
+            </div>
+            <div class="illustration">
+                <div>
+                    <h4>Modyfing the Auto Scaling Group</h4>
+                    <img src="{{ url_for('static', filename='img/elastic/modyfing_auto_scaling_group.png') }}" alt="">
+                </div>
+            </div>
+        </div>
+
+        <div class="task">
+            <h3>Testing the web application</h3>
+            <p>We can visiting the Domain Name System (DNS) name of the load balancer and append <b>/cafe</b> to the URL to access the café web application and test all features.</p>
+            <div class="illustration">
+                <div>
+                    <h4>Café Application</h4>
+                    <img src="{{ url_for('static', filename='img/elastic/app.png') }}" alt="">
+                </div>
+            </div>
+
+            <div class="illustration">
+                <div>
+                    <h4>EC2 instances created by Auto Scaling Group</h4>
+                    <img src="{{ url_for('static', filename='img/elastic/instances.png') }}" alt="">
+                </div>
+            </div>
+        </div>
+
+        <div class="task">
+            <h3>Testing automatic scaling under load</h3>
+            <p>We'll use <b>Secure Shell (SSH) passthrough through the bastion host instance</b> to connect to one of the running web server instances and copy ssh key to Bastion Host</p>
+            
+            <div class="code__block">
+                <pre>
+                    <code>
+sudo scp -i ~/Downloads/labsuser.pem /home/lukemn/Downloads/login.pem ec2-user@ec2-34-210-81-143.us-west-2.compute.amazonaws.com:~/
+login.pem
+                    </code>
+                </pre>
+            </div>
+
+            <p>Now we can test this archtecture relience, we'll stress these instance to force auto scaling group provisining new instances to support the application by running some commands</p>
+            <div class="code__block">
+                <pre>
+                    <code>
+sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+sudo yum install stress -y
+stress --cpu 1 --timeout 600
+                    </code>
+                </pre>
+            </div>
+            
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/elastic/instance_connect.png') }}" alt="">
+            </div>
+        </div>
+        
+    </div>
+
+
+    <div class="challenge">
+        <h2>Update from the café</h2>
+        <hr>
+        <p>After Sofía finishes testing the café web application's performance, she tells her parents about the changes—when traffic increases, the café application now successfully scales out. Frank and Martha are impressed that Sofía implemented a highly available and scalable architecture for the application.</p>
+        <p>Meanwhile, the entire café team is excited! They are busy preparing for the increased volume of orders that they anticipate from being featured on the TV show. As they work on their preparations, they know that they can rely on automatic scaling to help them take orders and delight new customers.</p>
+    </div>
+
+</div>
+{% endblock %}
