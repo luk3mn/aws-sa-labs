@@ -32,3 +32,7 @@ def iam():
 @page_bp.route("/elastic")
 def elastic():
     return render_template('elastic.html')
+
+@page_bp.route("/automation")
+def automation():
+    return render_template('automation.html')

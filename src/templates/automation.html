@@ -1,0 +1,313 @@
+{% extends 'base.html' %}
+
+{% block title%} Automating Your Architecture {% endblock %}
+
+{% block content %}
+<div class="article__header">
+    <h1>Automating Infrastructure Deployment</h1>
+    <h2>Scenario</h2>
+    <div class="scenario">
+        <p>Up to this point, the café staff created their AWS resources and configured their applications manually—mostly by using the AWS Management Console. This approach worked well as a way for the café to get started with a web presence quickly. However, they find it challenging to replicate their deployments to new AWS Regions so that they can support new café locations in multiple countries. They would also like to have separate development and production environments that reliably have matching configurations.</p>
+        <div class="skills">
+            <h3>Skills</h3>
+            <ul>
+                <li>Deploy a virtual private cloud (VPC) networking layer by using an AWS CloudFormation template</li>
+                <li>Deploy an application layer by using an AWS CloudFormation template</li>
+                <li>Use Git to invoke AWS CodePipeline, and to create or update stacks from templates that are stored in AWS CodeCommit</li>
+                <li>Duplicate network and application resources to another AWS Region by using AWS CloudFormation</li>
+            </ul>
+        </div>
+    </div>
+    <div class="illustration">
+        <div>
+            <h4>Inital Archtecture</h4>
+            <img style="background-color: rgb(255, 255, 255); padding: .3rem;" src="{{ url_for('static', filename='img/automation/start-arch.png') }}" alt="">
+        </div>
+    </div>
+</div>
+
+<div class="article__body">
+    
+    <div class="challenge">
+        <h2>Creating a static website for the café by using AWS CloudFormation</h2>
+        <p>The café would like to start using AWS CloudFormation to create and maintain resources in the AWS account. As a simple first attempt at this process is create a simple AWS CloudFormation template that can be used to create an Amazon Simple Storage Service (Amazon S3) bucket, so we give it a go then</p>
+        <div class="illustration">
+            <img src="{{ url_for('static', filename='img/automation/s3stack.png') }}" alt="">
+        </div>
+        <hr>
+        
+        <div class="task">
+            <h3>Creating an AWS CloudFormation template from scratch and configuring the bucket as a website and updating the stack</h3>
+            <p>We can replicate the first lab just by using <b>CloudFormation</b> to recreate all the infrastructure where we built up a static website for the café. So then, all we need to do is run an AWS Command Line Interface (AWS CLI) command that create the AWS CloudFormation stack, just like the following diagram below, and finally, update the AWS CloudFormation template to configure the S3 bucket to host a static website, after uploading the website static files to the new S3 bucket.</p>
+
+            <div class="illustration">
+                <div>
+                    <h4>CloudFormation stack created bucket</h4>
+                    <img height="320px" src="{{ url_for('static', filename='img/automation/s3-stack-create.png') }}" alt="">
+                </div>
+                <div>
+                    <h4>S3 bucket created successfully</h4>
+                    <img height="320px" src="{{ url_for('static', filename='img/automation/s3-bucket-create.png') }}" alt="">
+                </div>
+            </div>
+
+            <p>Then, as soon as all the configuration has been set up, we can send to S3 bucket, all the necesseries files to run the website from the café</p>
+            <div class="code__block">
+                <pre>
+                    <code>
+wget https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/CUR-TF-100-PRYODA-1-37918/30-mod10-challenge-CFn/s3/mod10-challenge/static-website.zip
+unzip static-website.zip -d static
+cd static
+aws s3 cp --recursive . s3://[bucket-name]/ --acl public-read
+                    </code>
+                </pre>
+            </div>
+
+            <p>Even so, there are bunch of commands we can use to performe a stack on cloud formation, such as:</p>
+            <div class="code__block">
+                <li>Validate syntax template</li>
+                <pre>
+                    <code>
+aws cloudformation validate-template --template-body file://S3.yaml
+                    </code>
+                </pre>
+
+                <li>Create a stack</li>
+                <pre>
+                    <code>
+aws cloudformation create-stack --stack-name CreateBucket --template-body file://S3.yaml
+                    </code>
+                </pre>
+
+                <li>Update a stack</li>
+                <pre>
+                    <code>
+aws cloudformation update-stack --stack-name CreateBucket --template-body file://S3.yaml
+                    </code>
+                </pre>
+            </div>
+
+            <p></p>
+            <div class="illustration">
+                <div>
+                    <h4>S3 Static Website Hosting</h4>
+                    <img height="320px" src="{{ url_for('static', filename='img/automation/s3-bucket-host.png') }}" alt="">
+                </div>
+                <div>
+                    <h4>Cafe Static Website</h4>
+                    <img height="320px" src="{{ url_for('static', filename='img/automation/s3-bucket-website.png') }}" alt="">
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="challenge">
+        <h2>Storing templates in a version control system and using a continuous delivery service, create the network and application layers for the café</h2>
+        <p>The next step is to expand the infrastructure as code (IaC) to build out other application resources in the AWS account, such as <b>EC2 instance</b>, and then, performe the Café dynamic website on it. However, to do that, we'll use <b>CodeCommit</b> to store the template by using control version system, and finally, we'll use it to integrate with CI/CD pipeline, like <b>CodePipeline</b> and perfome all the infrastructure we need faster than do it manually.</p>
+        <div class="illustration">
+            <img src="{{ url_for('static', filename='img/automation/code-pipeline.png') }}" alt="">
+        </div>
+        <hr>
+
+        <div class="task">
+            <h3>Cloning a CodeCommit repository that contains AWS CloudFormation templates</h3>
+            <p>The café team will use the repository to store and control the versions of the AWS CloudFormation templates, in that case, we have to clone the repository</p>
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/automation/code-repo.png') }}" alt="">
+            </div>
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/automation/code-repo-clone.png') }}" alt="">
+            </div>
+        </div>
+        
+        <div class="task">
+            <h3>Creating a new network layer with AWS CloudFormation, CodeCommit, and CodePipeline</h3>
+            <p>So, we'll use an AWS CloudFormation template to create a VPC with a public subnet, along with other network resources, and then use a CI/CD pipeline to build all resource automatically</p>
+            
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/automation/network-layer.png') }}" alt="">
+            </div>
+            
+            <div class="code__block">
+                <pre>
+                    <code>
+git add templates/cafe-network.yaml
+git add templates/start-lab.yaml
+git commit -m 'initial commit of network template' templates/cafe-network.yaml
+git commit -m 'initial commit of network template' templates/start-lab.yaml
+                    </code>
+                </pre>
+            </div>
+
+            <p>After cloning code layer cloudformation template, we can use <b>cafe-network.yaml</b> to deploy the VPC network into the AWS by using automation. So, as soon as the code change, the CI/CD pipeline start work, because the creation of the stack is automatically triggered, and the VPC network will be available in a few minutes.</p>
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/automation/network-layer-running.png') }}" alt="">
+            </div>
+            
+            <p>The result we can see after waiting all the creation processing has been finished is the <b>CodePipeline</b> status that indicates the VPC creation has been succeed </p>
+            <div class="illustration">
+                <div>
+                    <h4>Deploy step has a status of Failed</h4>
+                    <img src="{{ url_for('static', filename='img/automation/network-layer-stack.png') }}" alt="">
+                </div>
+                <div>
+                    <h4>Testing VPC implementation</h4>
+                    <img src="{{ url_for('static', filename='img/automation/network-layer-service.png') }}" alt="">
+                </div>
+            </div>
+        </div>
+
+        <div class="task">
+            <h3>Updating the network stack</h3>
+            <p>We'll  update the network stack so that it exports essential information about two of the resources that it creates. These two outputs can then be referenced by the application stack that we'll create later.</p>
+            <div class="illustration">
+                <div>
+                    <h4>Network Layer Update</h4>
+                    <img height="315" src="{{ url_for('static', filename='img/automation/network-layer-update.png') }}" alt="">
+                </div>
+                <div>
+                    <h4>Network Layer Output</h4>
+                    <img height="315" src="{{ url_for('static', filename='img/automation/network-layer-output.png') }}" alt="">
+                </div>
+            </div>
+        </div>
+
+        <div class="code__block">
+            <pre>
+                <code>
+Outputs:
+PublicSubnet:
+Description: The subnet ID to use for public web servers
+Value:                     
+Ref: PublicSubnet                    
+Export:                
+Name:          
+    'Fn::Sub': '${AWS::StackName}-SubnetID'   
+VpcId:   
+Description: The VPC ID  
+Value:    
+Ref: VPC   
+Export:     
+Name:    
+    'Fn::Sub': '${AWS::StackName}-VpcID'
+                </code>
+            </pre>
+        </div>
+
+        <div class="task">
+            <h3>Defining an EC2 instance resource and creating the application stack</h3>
+            <p>We'll create a new AWS CloudFormation template that will be used to create a stack, and then, the CafeAppPipeline pipeline creates or updates the update-cafe-app stack when we push the cafe-app.yaml template to the CodeCommit repository.</p>
+            <div class="illustration">
+                <div>
+                    <h4>Cafe App Template Upload</h4>
+                    <img src="{{ url_for('static', filename='img/automation/cafe-app-code.png') }}" alt="">
+                </div>
+                <div>
+                    <h4>Cafe App Stack Running</h4>
+                    <img src="{{ url_for('static', filename='img/automation/cafe-app-stack.png') }}" alt="">
+                </div>
+            </div>
+
+            <div class="illustration">
+                <div>
+                    <h4>Cafe App Deplying</h4>
+                    <img src="{{ url_for('static', filename='img/automation/cafe-app-deploy.png') }}" alt="">
+                </div>
+                <div>
+                    <h4>Cafe App Web Server</h4>
+                    <img src="{{ url_for('static', filename='img/automation/cafe-app-service.png') }}" alt="">
+                </div>
+            </div>
+
+            <p>After running all these process, we can notice that the website shows server information, such as the Region and Availability Zone where the web server is running. We also can, test the café app to chech out that everything is working well.</p>
+            <div class="illustration">
+                <div>
+                    <img src="{{ url_for('static', filename='img/automation/cafe-app-interface.png') }}" alt="">
+                </div>
+                <div>
+                    <img src="{{ url_for('static', filename='img/automation/cafe-app-store.png') }}" alt="">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="challenge">
+        <h2>Duplicating the network and application resources in a second AWS Region</h2>
+        <p>Creating a new AWS CloudFormation template that will be used to create a stack. The new stack deploys a dynamic website for the café.</p>
+        <hr>
+        
+        <div class="task">
+            <h3>Duplicating the café network and website to another AWS Region</h3>
+
+            <p>the AWS CloudFormation stacks will performe the previous taks automatically but in another region. A pipeline was defined to monitor when the CodeCommit repository was updated. It then invoked AWS CloudFormation to create or update the stack. However, we'll use the AWS CLI to duplicate the café network resources in another AWS Region. Then, we'll use the AWS CloudFormation console to create the application stack in the second Region.</p>
+            <div class="illustration">
+                <div>
+                    <h4>Deploying Café Network in Another Region</h4>
+                    <img src="{{ url_for('static', filename='img/automation/cafe-network-az2.png') }}" alt="">
+                </div>
+                <div>
+                    <h4>Cafe Network Running</h4>
+                    <img src="{{ url_for('static', filename='img/automation/cafe-network-service-az2.png') }}" alt="">
+                </div>
+            </div>
+
+            <p>For the app cafe, we can create a new S3 bucket in the same region we want to create these resources and then, copy the cafe app template to it.</p>
+            <div class="code__block">
+                <pre>
+                    <code>
+aws s3 cp templates/cafe-app.yaml s3://[repobucket-bucketname]/
+                    </code>
+                </pre>
+            </div>
+            <div class="illustration">
+                <div>
+                    <h4></h4>
+                    <img src="{{ url_for('static', filename='img/automation/cafe-app-to-s3.png') }}" alt="">
+                </div>
+                <div>
+                    <h4></h4>
+                    <img src="{{ url_for('static', filename='img/automation/cafe-app-bucket.png') }}" alt="">
+                </div>
+            </div>
+
+            <p>In that case, as soon as we copy the template to the S3 bucket, the next step is to create a new stack into the CloudFormation and choose the new S3 bucket as a source of the template.</p>
+            <div class="illustration">
+                <div>
+                    <h4>Cafe App Stack in Another Region</h4>
+                    <img src="{{ url_for('static', filename='img/automation/cafe-app-stack-az2.png') }}" alt="">
+                </div>
+                <div>
+                    <h4>Cafe App Web Server in Another Region</h4>
+                    <img src="{{ url_for('static', filename='img/automation/cafe-app-service-az2.png') }}" alt="">
+                </div>
+            </div>
+
+            <p>We can notice that the server information on the website shows that this second instance of the café website is running in the us-east-1 Region. The first web server that we created shows it is running in the us-west-2 Region</p>
+            <div class="illustration">
+                <div>
+                    <h4></h4>
+                    <img src="{{ url_for('static', filename='img/automation/cafe-app-interface-az2.png') }}" alt="">
+                </div>
+                <div>
+                    <h4></h4>
+                    <img src="{{ url_for('static', filename='img/automation/cafe-app-store-az2.png') }}" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="challenge">
+        <h2>Update from the café</h2>
+        <hr>
+        <p>Sofía is full with ideas as a result of what she just learned how to do!</p>
+        <p>She used AWS CloudFormation to deploy a static version of the café website successfully. She then deployed the dynamic café website as a web application successfully. For the dynamic website, Sofía used a CI/CD pipeline that used AWS CodeCommit, AWS CodePipeline, and AWS CloudFormation. In addition, she quickly duplicated both the network resources and the café application resources to another AWS Region.</p>
+        <p>Sofía imagines how she could use the AWS CloudFormation templates as part of a backup and disaster recovery (DR) solution. She just experienced how quickly she was able to re-create the essential café infrastructure. If her production deployment ever experiences a failure for any reason, she can now recreate it or duplicate it quickly.</p>
+        <p>Sofía also thinks about how she can now spin up test environments quickly. She can be confident that the configuration details of the test environments will match the production environment. She can also specifically control the ways that the test environment differs from the production environment by using features such as parameters and mappings.</p>
+        <p>The benefits of DevOps automation are many. Sofía now plans to make automation and CI/CD pipelines central to the way her team develops, tests, and deploys updates to the café's cloud resources.</p>
+    </div>
+
+</div>
+{% endblock %}
