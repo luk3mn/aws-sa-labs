@@ -51,7 +51,8 @@
                 </div>
             </div>
 
-            <p>Then, as soon as all the configuration has been set up, we can send to S3 bucket, all the necesseries files to run the website from the café</p>
+            <p>After completing the configuration setup, the next step involves the efficient transfer of all necessary files to an Amazon S3 bucket. This process is critical for ensuring that the website can be accessed and run seamlessly from the café or any other location, and to begin, it is important to organize and prepare all the essential files required for running the website. This includes web pages, scripts, images, stylesheets, and any other assets necessary for the website's functionality and design. Once the files are ready, they can be securely uploaded to an Amazon S3 bucket. This involves creating the appropriate bucket within the Amazon Web Services (AWS) environment and configuring the necessary permissions to ensure that the files are accessible to the intended users and systems.</p>
+            <p></p>
             <div class="code__block">
                 <pre>
                     <code>
@@ -63,7 +64,7 @@ aws s3 cp --recursive . s3://[bucket-name]/ --acl public-read
                 </pre>
             </div>
 
-            <p>Even so, there are bunch of commands we can use to performe a stack on cloud formation, such as:</p>
+            <p>Furthermore, when it comes to executing a stack on CloudFormation, there is a wide array of commands at our disposal to streamline the process. Some of the key commands that we'll utilize at this point include:</p>
             <div class="code__block">
                 <li>Validate syntax template</li>
                 <pre>
@@ -86,8 +87,7 @@ aws cloudformation update-stack --stack-name CreateBucket --template-body file:/
                     </code>
                 </pre>
             </div>
-
-            <p></p>
+            <p>Finally, thorough testing and validation should be conducted to confirm that the website can be successfully accessed and operated from the café, as well as from any other intended locations. This may involve performing compatibility checks across different devices and browsers, as well as conducting performance tests to ensure that the website functions optimally.</p>
             <div class="illustration">
                 <div>
                     <h4>S3 Static Website Hosting</h4>
@@ -97,6 +97,9 @@ aws cloudformation update-stack --stack-name CreateBucket --template-body file:/
                     <h4>Cafe Static Website</h4>
                     <img height="320px" src="{{ url_for('static', filename='img/automation/s3-bucket-website.png') }}" alt="">
                 </div>
+            </div>
+            <div class="note">
+                <p>Note: Additionally, the process may involve setting up versioning and backup mechanisms to safeguard the files and ensure that previous versions can be restored if needed.</p>
             </div>
 
         </div>
@@ -113,7 +116,8 @@ aws cloudformation update-stack --stack-name CreateBucket --template-body file:/
 
         <div class="task">
             <h3>Cloning a CodeCommit repository that contains AWS CloudFormation templates</h3>
-            <p>The café team will use the repository to store and control the versions of the AWS CloudFormation templates, in that case, we have to clone the repository</p>
+            <p>The café team will utilize a version control repository to securely store and manage different versions of the AWS CloudFormation templates. This practice ensures that changes to the infrastructure configuration are systematically tracked, documented, and reversible if necessary. To begin working with the CloudFormation templates stored in the repository, the team must initiate the process by cloning the repository.</p>
+            <p>Once the repository is successfully cloned, team members can collaboratively engage in enhancing the CloudFormation templates, implementing updates, introducing new features, or rectifying issues as required. They can commit their modifications to the local repository, establish branches for distinct tasks, and merge their work back into the primary branch when they are prepared to do so.</p>
             <div class="illustration">
                 <img src="{{ url_for('static', filename='img/automation/code-repo.png') }}" alt="">
             </div>
@@ -124,7 +128,8 @@ aws cloudformation update-stack --stack-name CreateBucket --template-body file:/
         
         <div class="task">
             <h3>Creating a new network layer with AWS CloudFormation, CodeCommit, and CodePipeline</h3>
-            <p>So, we'll use an AWS CloudFormation template to create a VPC with a public subnet, along with other network resources, and then use a CI/CD pipeline to build all resource automatically</p>
+            <p>In this scenario, we will leverage an AWS CloudFormation template to establish a Virtual Private Cloud (VPC) containing a public subnet, in addition to other essential network resources. Subsequently, we will employ a Continuous Integration/Continuous Deployment (CI/CD) pipeline to automate the deployment of all resources seamlessly.
+            </p>
             
             <div class="illustration">
                 <img src="{{ url_for('static', filename='img/automation/network-layer.png') }}" alt="">
@@ -146,7 +151,7 @@ git commit -m 'initial commit of network template' templates/start-lab.yaml
                 <img src="{{ url_for('static', filename='img/automation/network-layer-running.png') }}" alt="">
             </div>
             
-            <p>The result we can see after waiting all the creation processing has been finished is the <b>CodePipeline</b> status that indicates the VPC creation has been succeed </p>
+            <p>Upon completion of the creation process, team members can monitor the status in <b>CodePipeline</b> to verify the successful establishment of the VPC. By reviewing the CodePipeline dashboard or logs, they can track the progression of the deployment stages and confirm that the VPC creation operation has been completed without any errors. This provides a clear indication that the infrastructure setup, including the VPC and associated resources, has been successfully provisioned according to the specifications outlined in the CloudFormation template.</p>
             <div class="illustration">
                 <div>
                     <h4>Deploy step has a status of Failed</h4>
@@ -161,7 +166,7 @@ git commit -m 'initial commit of network template' templates/start-lab.yaml
 
         <div class="task">
             <h3>Updating the network stack</h3>
-            <p>We'll  update the network stack so that it exports essential information about two of the resources that it creates. These two outputs can then be referenced by the application stack that we'll create later.</p>
+            <p>We will enhance the network stack by configuring it to export crucial information regarding two specific resources it generates. These exported outputs will serve as references for the application stack that we plan to develop subsequently.</p>
             <div class="illustration">
                 <div>
                     <h4>Network Layer Update</h4>
@@ -254,7 +259,7 @@ Name:
                 </div>
             </div>
 
-            <p>For the app cafe, we can create a new S3 bucket in the same region we want to create these resources and then, copy the cafe app template to it.</p>
+            <p>To facilitate the deployment of the café application, we can initiate the creation of a new Amazon S3 bucket within the specific region chosen for the resource deployment. This S3 bucket will serve as a storage location for the café application template and associated files. After creating the bucket, we can proceed to upload the café application template to the S3 bucket, ensuring that it is readily accessible for deployment and configuration processes. This approach enables seamless access to the application template and facilitates efficient deployment management for the café application within the designated region.</p>
             <div class="code__block">
                 <pre>
                     <code>
@@ -273,7 +278,7 @@ aws s3 cp templates/cafe-app.yaml s3://[repobucket-bucketname]/
                 </div>
             </div>
 
-            <p>In that case, as soon as we copy the template to the S3 bucket, the next step is to create a new stack into the CloudFormation and choose the new S3 bucket as a source of the template.</p>
+            <p>After transferring the template to the S3 bucket, the next step is to initiate the creation of a new stack in AWS CloudFormation. When creating this stack, we specify the newly established S3 bucket as the source from which the template will be retrieved for deployment. By designating the S3 bucket as the template source, CloudFormation can seamlessly access the required configuration details and resources to orchestrate the deployment of the application stack efficiently. This approach streamlines the integration process and ensures a smooth deployment experience for the application stack within the CloudFormation environment.</p>
             <div class="illustration">
                 <div>
                     <h4>Cafe App Stack in Another Region</h4>
@@ -285,7 +290,7 @@ aws s3 cp templates/cafe-app.yaml s3://[repobucket-bucketname]/
                 </div>
             </div>
 
-            <p>We can notice that the server information on the website shows that this second instance of the café website is running in the us-east-1 Region. The first web server that we created shows it is running in the us-west-2 Region</p>
+            <p>Upon inspection of the server information displayed on the website, it becomes evident that the second instance of the café website is currently operational in the us-east-1 Region. In contrast, the initial web server we deployed indicates its location as the us-west-2 Region. This distinction in server regions highlights the geographical distribution of the café website instances, with each instance strategically positioned to optimize performance and availability based on the designated AWS regions.</p>
             <div class="illustration">
                 <div>
                     <h4></h4>

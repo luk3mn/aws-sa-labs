@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title%} Building Microservices and Serverless Architectures {% endblock %}
+
+{% block content %}
+<div class="article__header">
+    <h1>Implementing a Serverless Architecture for the Café</h1>
+    <h2>Scenario</h2>
+    <div class="scenario">
+        <p>The café's business is thriving. Frank and Martha want to get daily sales reports for products that are sold from the café's website. They will use this report to plan ingredient orders and monitor the impact of product promotions.</p>
+        <p>Sofía and Nikhil's initial idea is to use one of the Amazon Elastic Compute Cloud (Amazon EC2) web server instances to generate the report. Sofía sets up a cron job on the web server instance, which sends email messages that report daily sales. However, the cron job reduces the performance of the web server because it is resource-intensive.</p>
+        <p>Nikhil mentions the cron job to Olivia, and how it reduces the web application's performance. Olivia advises Sofía and Nikhil to separate non-business-critical reporting tasks from the production web server instance. After Sofía and Nikhil review the advantages and disadvantages of their current approach, they decide that they don't want to slow down the web server. They also consider running a separate EC2 instance, but they are concerned about the cost of running an instance 24/7 when it is only needed for a short time each day.</p>
+        <p>Sofía and Nikhil decide that running the report generation code as an AWS Lambda function would work, and it would also lower costs. The report itself could be sent to Frank and Martha's email address through Amazon Simple Notification Service (Amazon SNS).</p>
+        <div class="skills">
+            <h3>Skills</h3>
+            <ul>
+                <li>A Lambda function within a virtual private cloud (VPC) that connects to an Amazon Relational Database Service (Amazon RDS) database with the café's sales data</li>
+                <li>A Lambda function that generates and runs the sales report</li>
+                <li>A scheduled event that triggers the sales report Lambda function each day</li>
+            </ul>
+        </div>
+    </div>
+    <div class="illustration">
+        <div>
+            <h4>Inital Archtecture</h4>
+            <img style="background-color: rgb(255, 255, 255); padding: .3rem;" src="{{ url_for('static', filename='img/microservices/module-13-challenge-lab-starting-architecture.png') }}" alt="">
+        </div>
+        <div>
+            <h4>Final Archtecture</h4>
+            <img style="background-color: rgb(255, 255, 255); padding: .3rem;" src="{{ url_for('static', filename='img/microservices/module-13-challenge-lab-final-architecture.png') }}" alt="">
+        </div>
+    </div>
+</div>
+
+<div class="article__body">
+    
+    <div class="challenge">
+        <h2></h2>
+        <p></p>
+        <hr>
+        
+        <div class="task">
+            <h3>Implementing a serverless architecture to generate a daily sales report</h3>
+
+            <p>Creating and configuring the resources that we need to implement the reporting solution</p>
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/microservices/') }}" alt="">
+            </div>
+        </div>
+
+        <div class="task">
+            <h3>Creating the DataExtractor Lambda function in the VPC</h3>
+
+            <p>We'll create the DataExtractor Lambda function that extracts the café's sales data from an Amazon RDS database. So the Lambda function can access the RDS database instance, we must update the database security group with a rule to allow connections from the Lambda function. To enable this communication, we will create a security group for the Lambda function and add it as an inbound rule to the security group of the RDS instance.</p>
+            <div class="illustration">
+                <div>
+                    <h4>Security group for the Lambda function</h4>
+                    <img src="{{ url_for('static', filename='img/microservices/lambda-sg.png') }}" alt="">
+                </div>
+                <div>
+                    <h4>Updateing the DatabaseSG security group by adding the new Lambda function</h4>
+                    <img src="{{ url_for('static', filename='img/microservices/db-sg.png') }}" alt="">
+                </div>
+            </div>
+
+            <p>Next, we will develop a Lambda function called <b>salesAnalysisReportDataExtractor</b> to efficiently extract data from the database. This function will be placed in the private subnet and connected to the previously established <b>LambdaSG</b> for enhanced security measures.</p>
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/microservices/dataExtractor-lambda.png') }}" alt="">
+            </div>
+        </div>
+
+        <div class="task">
+            <h3>Creating the salesAnalysisReport Lambda function</h3>
+
+            <p>We need to set up a Lambda function responsible for generating and sending the daily sales analysis report. This function will be named <b>salesAnalysisReport</b> and will be specifically designed to create and distribute the daily sales report.</p>
+            <div class="illustration">
+                <img src="{{ url_for('static', filename='img/microservices/salesAnalysisReport-lambda.png') }}" alt="">
+            </div>
+        </div>
+
+        <div class="task">
+            <h3>Creating an SNS topic and an email subscription to the SNS topic</h3>
+
+            <p>The sales analysis report uses an SNS topic to send the report to email subscribers. So, we have to create an SNS topic and update the environment variables of the <b>salesAnalysisReport</b> Lambda function to store the topic Amazon Resource Name (ARN).</p>
+            <div class="illustration">
+                <div>
+                    <h4>Creating a standard SNS topic</h4>
+                    <img src="{{ url_for('static', filename='img/microservices/SalesReportTopic.png') }}" alt="">
+                </div>
+                <div>
+                    <h4>Updating the salesAnalysisReport Lambda function by adding the environment variable</h4>
+                    <img src="{{ url_for('static', filename='img/microservices/salesAnalysisReport-arn.png') }}" alt="">
+                </div>
+            </div>
+
+            <p>To start receiving the sales report via email, we will need to establish an email subscription specifically tailored to the topic we have generated. This will ensure that the relevant sales data is delivered directly to your inbox on a regular basis.</p>
+            <div class="illustration">
+                <div>
+                    <h4>Creating a new email subscription to the topic</h4>
+                    <img src="{{ url_for('static', filename='img/microservices/SalesReportTopic-running.png') }}" alt="">
+                </div>
+            </div>
+        </div>
+
+        <div class="task">
+            <h3>Testing the salesAnalysisReport Lambda function</h3>
+
+            <p>Before initiating the daily reporting event, it is essential to verify the functionality of the salesAnalysisReport Lambda function. To do so, we need to execute the salesAnalysisReport test. Upon successful completion of the test, an email report should be received within a few minutes.</p>
+            <div class="illustration">
+                <div>
+                    <h4>Sales Analysis Report Test</h4>
+                    <img src="{{ url_for('static', filename='img/microservices/salesAnalysisReportTest.png') }}" alt="">
+                </div>
+                <div>
+                    <h4>Sales Analysis Report Test Email</h4>
+                    <img src="{{ url_for('static', filename='img/microservices/salesAnalysisReportTest-email.png') }}" alt="">
+                </div>
+            </div>
+        </div>
+
+        <div class="task">
+            <h3>Setting up an Amazon EventBridge event to trigger the Lambda function each day</h3>
+
+            <p>Finally, to automate the daily reporting process, we will configure a trigger to initiate the report generation. This will involve establishing a new EventBridge rule that schedules the execution of the salesAnalysisReport Lambda function at a designated time every day. This setup ensures that the sales report is generated consistently and reliably at the specified time without manual intervention.</p>
+            <div class="illustration">
+                <div>
+                    <h4>Sales Analysis Report Lambda Function</h4>
+                    <img src="{{ url_for('static', filename='img/microservices/salesAnalysisReportFunction.png') }}" alt="">
+                </div>
+                <div>
+                    <h4>Sales Analysis Report Lambda Function Email</h4>
+                    <img src="{{ url_for('static', filename='img/microservices/salesAnalysisReportFuntion-email.png') }}" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="challenge">
+        <h2>Update from the café</h2>
+        <hr>
+        <p>After Sofía finishes testing the reporting, she creates an email subscription for Frank and Martha. Frank and Martha are excited to receive the first daily report from the serverless solution.</p>
+        <p>Sofía is pleased that she automated sales reporting for the café, which will continue to help Frank and Martha analyze daily sales and plan the café's inventory. She's also happy that she successfully learned how to use AWS Lambda, Amazon SNS, and Amazon EventBridge. In fact, Sofía plans to implement more serverless and automated reporting features into the café's web application to help the café grow and manage their business.</p>
+    </div>
+
+</div>
+{% endblock %}

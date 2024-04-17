@@ -36,3 +36,7 @@ def elastic():
 @page_bp.route("/automation")
 def automation():
     return render_template('automation.html')
+
+@page_bp.route("/microservices")
+def microservices():
+    return render_template("microservices.html")
